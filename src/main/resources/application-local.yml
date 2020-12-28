@@ -3,26 +3,15 @@ spring:
     hibernate:
       ddl-auto: update #need this one for persistent db only
     database-platform: org.hibernate.dialect.H2Dialect
-  datasource:
-    url: jdbc:h2:/tmp/spring-boot-h2
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
   h2:
     console:
       enabled: true
       path: /h2
   liquibase:
-    change-log: classpath:db/changelog/liquibase-changeLog.xml
+    enabled: false
 server:
   port: 8080
 management:
   endpoint:
-    liquibase:
-      enabled: true
     health:
       show-details: always
-  endpoints:
-    web:
-      exposure:
-        include: liquibase

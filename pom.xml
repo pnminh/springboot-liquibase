@@ -16,6 +16,17 @@
 
     <properties>
         <java.version>11</java.version>
+        <spring-boot.version>2.4.1</spring-boot.version>
+        <liquibase-core.version>3.10.3</liquibase-core.version>
+        <liquibase-maven-plugin.version>3.5.5</liquibase-maven-plugin.version>
+        <liquibase-hibernate5.version>3.6</liquibase-hibernate5.version>
+        <liquibase.url.local>jdbc:h2:/tmp/spring-boot-h2</liquibase.url.local>
+        <liquibase.url.dev>jdbc:h2:/tmp/spring-boot-h2-dev</liquibase.url.dev>
+        <liquibase.username.local>sa</liquibase.username.local>
+        <liquibase.username.dev>sa</liquibase.username.dev>
+        <liquibase.password.local></liquibase.password.local>
+        <liquibase.password.dev></liquibase.password.dev>
+        <validation-api.version>2.0.1.Final</validation-api.version>
     </properties>
 
     <dependencies>
@@ -62,9 +73,19 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
+            <version>${liquibase-core.version}</version>
         </dependency>
     </dependencies>
     <profiles>
+        <profile>
+            <id>local</id>
+            <properties>
+                <activeProfile>local</activeProfile>
+                <liquibase.url>${liquibase.url.local}</liquibase.url>
+                <liquibase.username>${liquibase.username.local}</liquibase.username>
+                <liquibase.password>${liquibase.password.local}</liquibase.password>
+            </properties>
+        </profile>
         <profile>
             <id>dev</id>
             <activation>
@@ -72,6 +93,12 @@
             </activation>
             <properties>
                 <activeProfile>dev</activeProfile>
+                <liquibase.url>${liquibase.url.dev}</liquibase.url>
+                <liquibase.username>${liquibase.username.dev}</liquibase.username>
+                <liquibase.password>${liquibase.password.dev}</liquibase.password>
+                <liquibase.referenceUrl>${liquibase.url.local}</liquibase.referenceUrl>
+                <liquibase.referenceUsername>${liquibase.username.local}</liquibase.referenceUsername>
+                <liquibase.referencePassword>${liquibase.password.local}</liquibase.referencePassword>
             </properties>
         </profile>
         <profile>
@@ -109,6 +136,37 @@
                         </exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>${liquibase-maven-plugin.version}</version>
+                <configuration>
+                    <propertyFile>src/main/resources/liquibase.properties</propertyFile>
+                    <outputChangeLogFile>src/main/resources/db/db.changelog-${activeProfile}.xml</outputChangeLogFile>
+                    <changeLogFile>src/main/resources/db/db.changelog-${activeProfile}.xml</changeLogFile>
+                    <diffChangeLogFile>
+                        src/main/resources/db/changelog/${activeProfile}/${maven.build.timestamp}_changelog.xml
+                    </diffChangeLogFile>
+                    <logging>info</logging>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.liquibase.ext</groupId>
+                        <artifactId>liquibase-hibernate5</artifactId>
+                        <version>${liquibase-hibernate5.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-data-jpa</artifactId>
+                        <version>${spring-boot.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>javax.validation</groupId>
+                        <artifactId>validation-api</artifactId>
+                        <version>${validation-api.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
