@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: Spring boot Liquibase Demo
+  profiles:
+    active:  '@activeProfile@'
