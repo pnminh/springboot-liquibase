@@ -6,7 +6,7 @@ spring:
   liquibase:
     change-log: classpath:db/db.changelog-${spring.profiles.active}.xml
   datasource:
-    url: @liquibase.url@
+    url: @liquibase.url@ #https://stackoverflow.com/questions/36703499/using-maven-properties-in-application-properties-in-spring-boot
     username: @liquibase.username@
     password: @liquibase.password@
     driver-class-name: org.h2.Driver
